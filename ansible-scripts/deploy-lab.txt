@@ -1,0 +1,4 @@
+  431  eval `ssh-agent` && ssh-add ocp-workshop.pem && ssh-add -l
+  432  vi mannimal.yml
+  433  ansible-playbook -vvv -e @mannimal.yml aws_lab_launch.yml
+
