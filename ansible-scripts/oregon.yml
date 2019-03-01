@@ -4,8 +4,8 @@
 
 # AWS Key configuration
 # AWS Account #1
-ec2_access_key: AKIAIINXNTLTVDVGCIZA
-ec2_secret_key: OueNk7YgHQXezFc2lHnj3u/MwtJ9GVsHt8C5x9Hn
+ec2_access_key: "your_access_key_here"
+ec2_secret_key: "your_secret_key_here"
 
 # AWS Account #2
 # ec2_access_key: "your_access_key_here"
