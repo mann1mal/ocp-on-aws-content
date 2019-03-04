@@ -7,7 +7,7 @@ There are two sets of Ansible scripts and .pem files that allow a user to launch
 ## Launch Instructions
 1. Pull down the content from the git repo that includes all of the ansible scripts and .pem files required to launch the environment:
 ```
-git clone -b AWS-OCP-LAB https://github.com/mann1mal/ocp-on-aws-content
+git clone https://github.com/mann1mal/ocp-on-aws-content
 ```
 
 2. Edit your the oregon.yml or tokyo.yml file so the workshop can be launched in the correct region with the correct number of "students" (max 100). The following variables are required to launch to playbook as is:
