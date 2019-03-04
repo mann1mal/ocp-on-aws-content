@@ -12,7 +12,7 @@ student_start_count: ##this is the number which the student count starts (if 1, 
 
 2. Source the apac or na ssh key, depending on where the workshop is launched:
 
-# eval `ssh-agent` && ssh-add <location>.pem && ssh-add -l
+eval `ssh-agent` && ssh-add <location>.pem && ssh-add -l
 
 3. Run the Ansible script with the variable file:
 
