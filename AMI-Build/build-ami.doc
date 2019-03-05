@@ -1,0 +1,278 @@
+## This doc details how to configure a VPC and build an AMI for the OCP 3.X on AWS Workshop
+
+# Introduction
+
+This guide is here to show instructors how to set up and run the lab.  It covers a few tasks:
+
+* AWS pre-reqs
+* AMI preparation
+* Docker configuration
+* Lab launch instructions
+* Web server configuration
+
+## AWS Pre-Reqs
+
+### Create and configure the VPC for the lab
+
+We need to create a VPC for our lab to ensure the attendees can access the enviornment from their workstations
+
+* Create VPC, CIDR block
+** Right-click on VPC, “Edit DNS Resolution,” ensure it is enabled
+** Right-click on VPC, “Edit DNS Hostnames,” ensure it is enabled
+* Create subnet, assign subnet to VPC, CIDR block
+** Right-click on newly created subnet and ensure you have “Auto-assign IP addresses” in enabled
+* Create and attach an internet gatway to your VPC
+* Associate route table with Subnet. 
+** Create a new route (Destination: 0.0.0.0/0 Target: <internet gateway-id>)
+* Create security group, assign to VPC
+** Outbound rules: All Traffic
+** Inbound rules (source should be 0.0.0.0/0 for all rules):
+*** HTTP Port 80
+*** HTTP* Port 8080
+*** SSH Port 22
+*** HTTPS Port 443
+*** HTTPS* Port 8443
+*** All ICMP - IPv4 Port ALL
+
+### Request AMI Quota increase with AWS Support team
+
+Please note, that there is a default quota set on each availability zone for each AMI size. If you plan on deploying more than 15 images for this lab, please request a quota increase with the AWS support team for your specific region and AMI type. See example ticket request below:
+
+```
+Limit increase request 1
+Service: EC2 Instances
+Region: US West (Oregon)
+Primary Instance Type: t2.xlarge
+Limit name: Instance Limit
+New limit value: 100
+```
+### Create keypair, Store .pem, and Create .ppk file
+
+The students in the labs will need to be able to access the instances via ssh protocol. This will require you to create a key pair to allow users to access the AWS instances. Create the keypair and store the resulting .pem file to distribute out to students during the lab.
+
+It can be assumed that a fair amount of the attendees will have Windows workstations as well. This will require you to offer those users a .PPK file to access their instances via PuTTy. Ensure you have a method to convert the .pem file form AWS into a .PPK file to offer to the attendees with Windows workstations.
+
+## Prepare the AMI
+
+In this section, we will build and customize the RHEL AMI that we will use as the underlying RHEL image for the lab deployment
+
+### Launch AMI
+
+* Log into AWS
+* Choose EC2
+* Click "Launch Instance"
+* Select "Red Hat"
+* Select "t2.xlarge", click "Next"
+ - Select "Network"
+ - Select "Subnet"
+ - Ensure "Auto-assign Public IP" is "enabled"
+ - Click "Next"
+* Change disk size to "40"
+* Click "Next"
+* Select "Existing security group"
+ - Pick the security group you already created
+* Click "Review and Launch"
+* Click "Launch"
+* Select your existing key pair that has already been created
+ - Click "Acknowledge"
+* Click "Launch Instances"
+* Click "View Instances"
+
+### Configure the AMI
+
+**Note:** Perform the following commands as the root user
+
+* ssh to the instance you just deployed
+
+```
+ssh -i <KEY PAIR NAME HERE>.pem ec2-user@<aws-public-hostname>.amazonaws.com"
+```
+
+* You will need to subscribe to Red Hat CDN. You'll need to use a Red Hat account that has the appropriate permissions/subscriptions available.
+
+```
+# subscription-manager register
+# subscription-manager list --available --matches 'Red Hat OpenShift Enterprise Infrastructure'
+# subscription-manager attach --pool 8a85f9XXXXXXXXXXXX
+# subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-server-ose-3.6-rpms" --enable="rhel-7-fast-datapath-rpms"
+```
+
+* Install auxiliary packages used in the lab:
+
+```
+# yum -y install ansible python-devel git wget firewalld docker bash-completion
+```
+
+* Install the development tools: 
+
+```
+# yum groupinstall -y "Development Tools"
+```
+
+* Configure Docker
+
+```
+sed -i '/OPTIONS=.*/c\OPTIONS="--selinux-enabled --insecure-registry 172.30.0.0/16"' /etc/sysconfig/docker
+systemctl daemon-reload
+systemctl restart docker
+systemctl enable docker
+groupadd docker
+usermod -aG docker ec2-user
+reboot
+```
+
+* Configure Firewalld
+
+```
+systemctl restart firewalld
+
+firewall-cmd --permanent --new-zone dockerc
+firewall-cmd --permanent --zone dockerc --add-source 172.17.0.0/16
+firewall-cmd --permanent --zone dockerc --add-port 8443/tcp
+firewall-cmd --permanent --zone dockerc --add-port 53/udp
+firewall-cmd --permanent --zone dockerc --add-port 8053/udp
+firewall-cmd --permanent --zone public  --add-port=8443/tcp
+firewall-cmd --permanent --zone public  --add-port=80/tcp
+firewall-cmd --permanent --zone public  --add-port=53/tcp
+firewall-cmd --permanent --zone public  --add-port=53/udp
+firewall-cmd --permanent --zone public  --add-port=80/tcp
+firewall-cmd --permanent --zone public  --add-port=443/tcp
+firewall-cmd --permanent --zone public  --add-port=2379/tcp
+firewall-cmd --permanent --zone public  --add-port=2380/tcp
+firewall-cmd --permanent --zone public  --add-port=4789/udp
+firewall-cmd --permanent --zone public  --add-port=8053/tcp
+firewall-cmd --permanent --zone public  --add-port=8053/udp
+firewall-cmd --permanent --zone public  --add-port=8443/tcp
+firewall-cmd --permanent --zone public  --add-port=8444/tcp
+firewall-cmd --permanent --zone public  --add-port=10250/tcp
+
+firewall-cmd --reload
+```
+
+
+**Note:** Exit the root user, perform the rest of the commands as a regular user:
+
+* Get the latest "oc" client.
+
+```
+wget https://github.com/openshift/origin/releases/download/v3.6.0/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit.tar.gz
+
+tar xzvf openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit.tar.gz
+
+sudo cp openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit/oc /usr/sbin/
+
+sudo rm -rf openshift-origin-client*
+```
+
+* Meet the requirements of "oc cluster up"
+ 
+```
+sudo sysctl -w net.ipv4.ip_forward=1
+```
+
+* Clone the lab repo: 
+
+```
+git clone https://github.com/mann1mal/aws-loft-2017-container-lab.git
+
+chmod +x /home/ec2-user/aws-loft-2017-container-lab/scripts/host/start-oc.sh
+
+chmod +x /home/ec2-user/aws-loft-2017-container-lab/scripts/host/cleanup-oc.sh
+
+mv /home/ec2-user/aws-loft-2017-container-lab/scripts/host/start-oc.sh ~
+
+mv /home/ec2-user/aws-loft-2017-container-lab/scripts/host/cleanup-oc.sh ~
+```
+
+* Start the cluster to cache the iamges.
+
+```
+./start-oc.sh
+
+sudo rm -rf /home/ec2-user/aws-loft-2017-container-lab
+```
+
+* Test the deployment by attempting to access the OpenShift web UI via the public FQDN displayed in the "./start-oc.sh" output. If you can access the OCP web UI, you are ready to move on to the next step.
+
+### Create AMI
+
+* In AWS console right click on the instance you just configured.
+ - Choose "Image", and then "Create Image"
+ - Provide an "Image Name", "Image Description", Click "Create Image"
+
+## Set up a web server for the students
+
+* Use the same AMI launch sequence for a lightweight apache web server
+* Install httpd, start and enable the service
+* Copy the lab private key to the web server and make available via http
+* May want to add AWS termination protection on this to make sure noone blows it away
+
+## Launch the VMs for the students
+
+The following section details how to pull down and edit the Ansible playbooks to launch the lab for an event at scale.
+
+* Clone the repository to your local workstation. This repo contains the Ansible playbooks we will use to deploy the lab.
+
+```
+git clone -b AWS-OCP-LAB https://github.com/mann1mal/managing-ocp-install-beyond
+cd managing-ocp-install-beyond/
+```
+* Make a copy of the "my_secrets" playbook. We will cusotmize this playbook to allow us to launch to lab for the students at scale.
+
+```
+cp my_secrets.yml <my-username>.yml
+```
+
+** Fill out the variables in the newly copied "my_secrets" file. The following variables in the file need to be defined in order to launch the lab:
+
+* See below for explanation of "non-obvious" variables:
+ - The "*student_count*" variable is the number of instances you wish to deploy. 
+ - The "*lab_user*" variable is simply the name appended at the front of the public DNS name. For instance, if I use "*student*" for "*lab_user*," the public DNS name will look like "*student-<x>.your.domain.com*." 
+ - The "*aws_az_1*" variable is the Availability Zone we intend to deploy in the exercise
+ - The "*tower_ami_id*" variable is the AMI ID for the RHEL image we created ealier in the exercise.
+ - The "*domain_name*" variable is the domain we intend to use to assign FQDNs to the instances.
+
+```
+ec2_access_key:
+ec2_secret_key:
+
+aws_key_name:
+lab_user:
+student_count:
+
+aws_vpc_name: 
+aws_route_table:
+aws_subnet_id:
+aws_region:
+aws_sec_group:
+aws_vpc_name:
+aws_vpc_cidr_block:
+aws_subnet_cidr:
+aws_subnet_name:
+aws_az_1:
+
+domain_name:
+
+tower_inst_type: 
+tower_ami_id:
+```
+
+* launch the playbook
+
+```
+ansible-playbook -v -e @<my-username>.yml aws_lab_launch.yml
+```
+
+* log into the AWS vm and start the lab
+
+```
+ssh -i /path/to/.pem ec2-user@student-<x>.ocp-lab.sysdeseng.com
+```
+**Note:** FQDN will be dependent on the domain you provide in the Ansible playbook
+
+Each VM is assigned a public DNS name.  Log in with your student ID substituted in the the DNS name above
+
+## References
+
+* https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md
+* https://access.redhat.com/documentation/en-us/openshift_container_platform/3.6/html/installation_and_configuration/installing-a-cluster#install-config-install-host-preparation
