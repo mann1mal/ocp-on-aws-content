@@ -26,7 +26,7 @@ student_start_count: ##this is the number which the student count starts (if 1, 
 ```
 $ eval `ssh-agent` && ssh-add <location>.pem && ssh-add -l
 ```
-5. Run the Ansible script with the variable file:
+5. Run the Ansible script with the location-specific variable file:
 ```
 $ ansible-playbook -vvv -e @<location>.yml aws_lab_launch.yml
 ```
