@@ -43,7 +43,7 @@ aws_subnet_cidr: "10.98.1.0/24"
 aws_subnet_name: "OCPLab-Subnet"
 aws_key_name: "ocp-workshop"
 aws_az_1: "us-west-2a"
-
+instance_profile_name: aws-servicebroker-node-role
 
 ## Domain to use for wildcard
 domain_name: openshift.awsworkshop.io
