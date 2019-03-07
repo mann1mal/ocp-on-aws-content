@@ -13,7 +13,7 @@ $ git clone https://github.com/mann1mal/ocp-on-aws-content
 ```
 $ cd ~/ocp-on-aws-content/ansible-scripts
 ```
-3a. If running this lab in the AWS-owned account:
+3. If running this lab in the AWS-owned account:
 
 Edit your the `oregon.yml` or `tokyo.yml` file so the workshop can be launched in the correct region with the correct number of "students" (max 100). The following variables are required to launch to playbook as is (all the rest of the default variables can remaind unchanged):
 
@@ -24,15 +24,15 @@ student_count: ##this is the number of instances you'd like to deploy for the wo
 student_start_count: ##this is the number which the student count starts (if 1, student-1 is first)
 ```
 
-3b. If building this in your own account:
+4. If building this in your own account:
 
 TBD
 
-4. Source the `oregon.pem` or `tokyo.pem` ssh key, depending on where the workshop is launched. The ansible scripts that launch the lab need to be able to ssh into the instances to configure services:
+5. Source the `oregon.pem` or `tokyo.pem` ssh key, depending on where the workshop is launched. The ansible scripts that launch the lab need to be able to ssh into the instances to configure services:
 ```
 $ eval `ssh-agent` && ssh-add <location>.pem && ssh-add -l
 ```
-5. Run the Ansible script with the location-specific variable file:
+6. Run the Ansible script with the location-specific variable file:
 ```
 $ ansible-playbook -vvv -e @<location>.yml aws_lab_launch.yml
 ```
