@@ -13,7 +13,6 @@
       group: "{{ aws_sec_group }}"
       instance_type: "{{ tower_inst_type }}"
       image: "{{ tower_ami_id }}"
-      instance_profile_name: aws-servicebroker-node-role
       wait: yes
       instance_tags:
         Name: "{{ lab_user }}-{{ item }}.{{ domain_name }}"
