@@ -7,10 +7,13 @@ There are two sets of Ansible scripts and .pem files that allow a user to launch
 ## Launch Instructions
 1. Pull down the content from the git repo that includes all of the ansible scripts and .pem files required to launch the environment:
 ```
-git clone https://github.com/mann1mal/ocp-on-aws-content
+$ git clone https://github.com/mann1mal/ocp-on-aws-content
 ```
-
-2. Edit your the `oregon.yml` or `tokyo.yml` file so the workshop can be launched in the correct region with the correct number of "students" (max 100). The following variables are required to launch to playbook as is (all the rest of the default variables can remaind unchanged):
+2. Navigate into the `ansible-scripts` directory
+```
+$ cd ~/ocp-on-aws-content/ansible-scripts
+```
+3. Edit your the `oregon.yml` or `tokyo.yml` file so the workshop can be launched in the correct region with the correct number of "students" (max 100). The following variables are required to launch to playbook as is (all the rest of the default variables can remaind unchanged):
 
 ```
 ec2_access_key:
@@ -19,11 +22,11 @@ student_count: ##this is the number of instances you'd like to deploy for the wo
 student_start_count: ##this is the number which the student count starts (if 1, student-1 is first)
 ```
 
-3. Source the apac or na ssh key, depending on where the workshop is launched:
+4. Source the apac or na ssh key, depending on where the workshop is launched:
 ```
-eval `ssh-agent` && ssh-add <location>.pem && ssh-add -l
+$ eval `ssh-agent` && ssh-add <location>.pem && ssh-add -l
 ```
-4. Run the Ansible script with the variable file:
+5. Run the Ansible script with the variable file:
 ```
-ansible-playbook -vvv -e @<location>.yml aws_lab_launch.yml
+$ ansible-playbook -vvv -e @<location>.yml aws_lab_launch.yml
 ```
