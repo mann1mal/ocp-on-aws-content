@@ -1,5 +1,3 @@
-ToDo: Sort out new IAM User
-
 # Overview for Current State of OCP on AWS Workshop
 
 The content uploaded at this repo is to allow a user to deploy the existing OCP on AWS (running on 3.9) as it exists today.
