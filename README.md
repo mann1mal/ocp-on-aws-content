@@ -10,7 +10,7 @@ There are two sets of Ansible scripts and .pem files that allow a user to launch
 git clone https://github.com/mann1mal/ocp-on-aws-content
 ```
 
-2. Edit your the oregon.yml or tokyo.yml file so the workshop can be launched in the correct region with the correct number of "students" (max 100). The following variables are required to launch to playbook as is (all the rest of the default variables can remaind unchanged):
+2. Edit your the `oregon.yml` or `tokyo.yml` file so the workshop can be launched in the correct region with the correct number of "students" (max 100). The following variables are required to launch to playbook as is (all the rest of the default variables can remaind unchanged):
 
 ```
 ec2_access_key:
