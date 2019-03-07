@@ -22,7 +22,7 @@ student_count: ##this is the number of instances you'd like to deploy for the wo
 student_start_count: ##this is the number which the student count starts (if 1, student-1 is first)
 ```
 
-4. Source the apac or na ssh key, depending on where the workshop is launched:
+4. Source the `oregon.pem` or `tokyo.pem` ssh key, depending on where the workshop is launched. The ansible scripts that launch the lab need to be able to ssh into the instances to configure services:
 ```
 $ eval `ssh-agent` && ssh-add <location>.pem && ssh-add -l
 ```
