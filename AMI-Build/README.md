@@ -4,6 +4,8 @@
 
 Steps for configuring a VPC to support this workshop can be found in the "build-ami" doc above.
 
+The first 12 minutes of the [following bluejeans link](https://redhat.bluejeans.com/playback/s/PRVnPh7BNsK6SjQHFoQjLShFqWev9ALivpMQSzZa6z7EIfLkL9FALKyMIJgHINuf) walks through the creation of the VPC for the workshop environment.
+
 ## Configure a domain via Route53 to be used in the workshop
 
 You will also need to allocate a domain in Route53 to be used when provisioning the workshop so the instances can be assigned human readible hostnames.
