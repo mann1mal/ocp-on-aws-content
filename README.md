@@ -23,16 +23,11 @@ ec2_secret_key:
 student_count: ##this is the number of instances you'd like to deploy for the workshop
 student_start_count: ##this is the number which the student count starts (if 1, student-1 is first)
 ```
-
-4. If building this in your own account:
-
-TBD
-
-5. Source the `oregon.pem` or `tokyo.pem` ssh key, depending on where the workshop is launched. The ansible scripts that launch the lab need to be able to ssh into the instances to configure services:
+4. Source the `oregon.pem` or `tokyo.pem` ssh key, depending on where the workshop is launched. The ansible scripts that launch the lab need to be able to ssh into the instances to configure services:
 ```
 $ eval `ssh-agent` && ssh-add <location>.pem && ssh-add -l
 ```
-6. Run the Ansible script with the location-specific variable file:
+5. Run the Ansible script with the location-specific variable file:
 ```
 $ ansible-playbook -vvv -e @<location>.yml aws_lab_launch.yml
 ```
