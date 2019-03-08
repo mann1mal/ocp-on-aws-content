@@ -71,3 +71,7 @@ $ eval `ssh-agent` && ssh-add <location>.pem && ssh-add -l
 ```
 $ ansible-playbook -vvv -e @<location>.yml aws_lab_launch.yml
 ```
+6. Verify ssh access after the playbook has completed:
+```
+$ ssh -i <location>.pem ec2-user@student-<x>.<domain>.com
+```
