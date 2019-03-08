@@ -40,8 +40,8 @@ See below for explanation of "non-obvious" variables:
  - The "*domain_name*" variable is the domain we intend to use to assign FQDNs to the instances.
 
 ```
-ec2_access_key:
-ec2_secret_key:
+ec2_access_key: <admin-IAM-user-access-key>
+ec2_secret_key: <admin-IAM-user-secret-key>
 student_count: ##this is the number of instances you'd like to deploy for the workshop
 student_start_count: ##this is the number which the student count starts (if 1, student-1 is first)
 
