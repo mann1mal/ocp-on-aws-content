@@ -32,6 +32,13 @@ $ cd ~/ocp-on-aws-content/ansible-scripts
 
 Edit your the `oregon.yml` or `tokyo.yml` file so the workshop can be launched in the correct region with the correct number of "students" (max 100). The following variables are required to launch to playbook:
 
+See below for explanation of "non-obvious" variables:
+ - The "*student_count*" variable is the number of instances you wish to deploy. 
+ - The "*lab_user*" variable is simply the name appended at the front of the public DNS name. For instance, if I use "*student*" for "*lab_user*," the public DNS name will look like "*student-<x>.your.domain.com*." 
+ - The "*aws_az_1*" variable is the Availability Zone we intend to deploy in the exercise
+ - The "*tower_ami_id*" variable is the AMI ID for the RHEL image we created ealier in the exercise.
+ - The "*domain_name*" variable is the domain we intend to use to assign FQDNs to the instances.
+
 ```
 ec2_access_key:
 ec2_secret_key:
@@ -51,6 +58,10 @@ aws_subnet_name: "<subnet-name>"
 aws_key_name: "<key-name>"
 aws_az_1: "<EC2-availability-zone>"
 instance_profile_name: <role-name-to-attach-service-broker> #this is the role name configured above that allows us to use the service broker to attach AWS services to the OCP environment
+
+# AMI configuration
+tower_inst_type: t2.xlarge
+tower_ami_id: <ami-id>
 ```
 4. Source the `oregon.pem` or `tokyo.pem` ssh key, depending on where the workshop is launched. The ansible scripts that launch the lab need to be able to ssh into the instances to configure services:
 ```
