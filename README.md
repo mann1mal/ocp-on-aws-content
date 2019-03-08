@@ -1,6 +1,6 @@
 # Overview for Current State of OCP on AWS Workshop
 
-The content uploaded at this repo is to allow a user to deploy the existing OCP on AWS (running on 3.9) as it exists today in the AWS-owned EC2 account for joint AWS/RH sponsored workshops. If you'd like to set this up in your own EC2 account, [click here](https://github.com/mann1mal/ocp-on-aws-content/tree/master/AMI-Build).
+The content uploaded at this repo is to allow a user to deploy the OCP on AWS workshop infrastructure (running on 3.9) as it exists today in the AWS-owned EC2 account. If you'd like to set this up in your own EC2 account, [click here](https://github.com/mann1mal/ocp-on-aws-content/tree/master/AMI-Build) for additional instructions.
 
 There are two sets of Ansible scripts and .pem files that allow a user to launch this workshop in the APAC region (Tokyo) or in the NA region (Oregon)
 
