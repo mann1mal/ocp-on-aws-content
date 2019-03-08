@@ -1,5 +1,7 @@
 ## This doc details how to configure a VPC and build an AMI for the OCP 3.X on AWS Workshop
 
+**Note:f** The first 12 minutes of the following bluejeans link walks through the creation of the VPC for the workshop environment.
+
 # Introduction
 
 This guide is here to show instructors how to set up and run the lab.  It covers a few tasks:
