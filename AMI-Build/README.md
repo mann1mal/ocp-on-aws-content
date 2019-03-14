@@ -2,7 +2,7 @@
 
 ## Configure your VPC
 
-Steps for configuring a VPC to support this workshop can be found in the "build-ami" doc above.
+Steps for configuring a VPC to support this workshop can be found in the [build-ami](https://github.com/mann1mal/ocp-on-aws-content/blob/master/AMI-Build/build-ami.adoc) doc above.
 
 The first 12 minutes of the [following bluejeans link](https://redhat.bluejeans.com/playback/s/PRVnPh7BNsK6SjQHFoQjLShFqWev9ALivpMQSzZa6z7EIfLkL9FALKyMIJgHINuf) walks through the creation of the VPC for the workshop environment.
 
